@@ -7,7 +7,19 @@ export const answersSlice = createSlice({
   initialState,
   reducers: {
     addAnswer: (state, action) => {
-      state.push(action.payload);
+      //si l'élément est déjà présent dans la liste, on en l'ajoute pas à nouveau
+      if (
+        JSON.parse(JSON.stringify(state)).some((element) => {
+          console.log("element", element, "word Submitted", action.payload);
+          return element.word === action.payload.word;
+        })
+      )
+        console.log("le mot est déjà dans la liste !");
+      else if (action.payload === undefined) {
+        console.log("Je n'ai pas compris le mot !");
+      } else {
+        return [...state, action.payload];
+      }
     },
     resetAllAnswer: (state) => {
       state.length = 0;

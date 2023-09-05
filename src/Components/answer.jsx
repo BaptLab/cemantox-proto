@@ -1,26 +1,48 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import snowIcon from "../assets/images/icons/snow.png";
 
-function Answer({ data }) {
-  const [progressionWidth, setProgressionWidth] = useState("0");
+function Answer(props) {
+  //destructuring the props for better readability
+  const index = props.index;
+  const word = props.data.word;
+  const temperature = props.data.temp;
+  const ranking = props.data.n_top;
 
-  useEffect(() => {
-    // Introduce a delay before updating the width
-    const delay = setTimeout(() => {
-      setProgressionWidth(`${data.ranking / 10}px`);
-    }, 100); // Adjust the delay time as needed
+  //convert the rank into progression bar width
+  const handleRankFormat = (ranking) => {
+    if (ranking != null) {
+      return `${(1000 - ranking + 1) / 10}px`;
+    } else {
+      return 0;
+    }
+  };
 
-    return () => clearTimeout(delay); // Clean up the timeout on component unmount
-  }, [data.ranking]);
+  //Format the rank on 1000
+  const handleTopRankFormat = (ranking) => {
+    if (ranking != null) {
+      return 1000 - ranking + 1;
+    } else {
+      return "";
+    }
+  };
+
+  //Format the temp to keep only two digits after coma
+  const handleTempFormat = (temperature) => {
+    return (Math.round(temperature * 100) / 100).toFixed(2);
+  };
 
   return (
     <div className="answer-container">
-      <span className="ranking">{data.ranking}</span>
-      <span className="word">{data.word}</span>
-      <span className="temperature">{data.temperature}</span>
+      <span className="ranking">{index}</span>
+      <span className="word">{word}</span>
+      <span className="temperature">{handleTempFormat(temperature)}</span>
       <img className="temperature-icon" src={snowIcon} alt="temperature" />
+      <span className="ranking">{handleTopRankFormat(ranking)}</span>
       <span className="progression-container">
-        <span style={{ width: progressionWidth }} className="progression-bar"></span>
+        <span
+          style={{ width: handleRankFormat(ranking) }}
+          className="progression-bar"
+        ></span>
       </span>
     </div>
   );
